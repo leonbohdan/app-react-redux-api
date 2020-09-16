@@ -1,0 +1,38 @@
+.card {
+  box-sizing: border-box;
+  // border: 1px solid black;
+  border-radius: 10px;
+  background-color: #fff;
+  padding: 20px;
+  // transition: transform 0.4s ease-in-out;
+  transition: background-color 0.4s ease-in-out;
+
+  &__img-container {
+    max-width: 300px;
+    margin: 0 auto;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    transition: transform 0.4s ease-in-out;
+
+    &:hover {
+      // border: 1px solid black;
+      transform: scale(1.1);
+    }
+  }
+
+  &__image {
+    height: 400px;
+    width: 300px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  &__content {}
+
+  &:hover {
+      // border: 1px solid black;
+      // transform: scale(1.1);
+      background-color: #84a9ac;
+    }
+
+}
