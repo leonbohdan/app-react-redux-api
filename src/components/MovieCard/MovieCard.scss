@@ -1,38 +1,95 @@
 .card {
   box-sizing: border-box;
-  // border: 1px solid black;
+  border: 1px solid #ccc;
   border-radius: 10px;
   background-color: #fff;
   padding: 20px;
-  // transition: transform 0.4s ease-in-out;
-  transition: background-color 0.4s ease-in-out;
+  transition: background-color 0.4s ease-in-out,
+    transform 0.4s ease-in-out;
+  perspective: 600px;
 
-  &__img-container {
+  &__container {
+    position: relative;
     max-width: 300px;
+    min-height: 300px;
     margin: 0 auto;
-    border: 1px solid transparent;
     border-radius: 10px;
-    transition: transform 0.4s ease-in-out;
+    background-color: #fff;
+    transition: transform 1s;
+    transform-style: preserve-3d;
+    transform: rotateY(0deg);
+  }
 
-    &:hover {
-      // border: 1px solid black;
-      transform: scale(1.1);
+  &__face {
+    max-width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    color: black;
+    text-align: center;
+    font-weight: bold;
+    font-size: 15px;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+
+    &--front {}
+
+    &--back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      max-width: 300px;
+      width: 100%;
+      height: 100%;
+      background-color: #e4e3e3;
+      border-radius: 10px;
+      transform: rotateY(180deg);
     }
   }
 
   &__image {
-    height: 400px;
-    width: 300px;
+    height: 300px;
+    width: 100%;
     border-radius: 10px;
-    cursor: pointer;
   }
 
-  &__content {}
+  &__content {
+    &--buttons {}
+
+    &--button {
+      display: inline-block;
+      cursor: pointer;
+      height: 30px;
+      width: 100%;
+      margin-top: 5px;
+      border-radius: 5px;
+      font-size: 15px;
+      letter-spacing: 2px;
+      text-decoration: none;
+      transition: background 0.3s ease-in-out,
+        scale 0.3s ease-in-out;
+
+      &:hover,
+      &:focus {
+        background: #3282b8;
+        color: white;
+      }
+
+      &:focus {
+        outline: none;
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+  }
 
   &:hover {
-      // border: 1px solid black;
-      // transform: scale(1.1);
-      background-color: #84a9ac;
-    }
-
+    transform: scale(1.1);
+    background-color: #84a9ac;
+  }
 }
+
+.is-flipped {
+    transform: rotateY(180deg);
+  }

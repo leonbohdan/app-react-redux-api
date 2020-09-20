@@ -1,18 +1,12 @@
-const URL_API = 'https://www.omdbapi.com/';
+import data from './movies.json';
 
-// const defaultValues = ['a', 'f', 'd', 'x', 'o', 'p', 'r'];
+const URL_API = 'https://www.omdbapi.com/';
 
 export function getMovie(title) {
   return fetch(`${URL_API}?apikey=d905f6c1&t=${title}`)
     .then(response => response.json());
 }
 
-// export function getDefaultMovie(defaultValues) {
-//   const movies = defaultValues.map(movieName => {
-//     return fetch(`${URL_API}?apikey=d905f6c1&t=${movieName}`)
-//       .then((response) => response.json(),
-//     );
-//   });
+export const defaultMovies = data;
 
-//   return movies;
-// }
+console.log(defaultMovies);

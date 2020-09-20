@@ -1,38 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './FindMovie.scss';
 import PropTypes from 'prop-types';
 import CN from 'classnames';
 import { MovieCard } from '../MovieCard';
+import { Loader } from '../Loader';
+// import { useDispatch } from 'react-redux';
+// import { addMovies } from '../../redux/store';
 
 import { getMovie } from '../../api/api';
 
 export const FindMovie = ({ addMovie }) => {
+  // const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const [searchTitle, setSearchTitle] = useState('');
   const [foundMovie, setFoundMovie] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [canAddMovie, setCanAddMovie] = useState(false);
 
-  const searchMovie = async(title) => {
+  // useEffect(() => {
+    // setLoading(false);
+    // searchMovie(searchTitle);
+  // }, [loading]);
+
+  const searchMovie = async (title) => {
+    setLoading(true);
     const movie = await getMovie(title);
 
     if (movie.Response === 'False') {
+      setLoading(false);
       setNotFound(true);
       setShowPreview(false);
       setCanAddMovie(false);
-    } else {
-      setFoundMovie({
-        title: movie.Title,
-        description: movie.Plot,
-        imgUrl: movie.Poster,
-        imdbUrl:
-          `https://www.imdb.com/title/${movie.imdbID}`,
-        imdbId: movie.imdbID,
-      });
-      setNotFound(false);
-      setShowPreview(true);
-      setCanAddMovie(true);
+      return;
     }
+
+    setFoundMovie({
+      title: movie.Title,
+      description: movie.Plot,
+      imgUrl: movie.Poster,
+      imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
+      imdbId: movie.imdbID,
+    });
+    
+    setLoading(false);
+    setNotFound(false);
+    setShowPreview(true);
+    setCanAddMovie(true);
   };
 
   return (
@@ -94,9 +108,10 @@ export const FindMovie = ({ addMovie }) => {
               disabled={!canAddMovie}
               onClick={() => {
                 addMovie(foundMovie);
+                setLoading(false);
                 setShowPreview(false);
                 setCanAddMovie(false);
-                setSearchTitle("");
+                setSearchTitle('');
               }}
             >
               Add to the list
@@ -108,7 +123,11 @@ export const FindMovie = ({ addMovie }) => {
       {showPreview && (
         <div className="container">
           <h2 className="container__title">Preview</h2>
-          <MovieCard {...foundMovie} />
+            {loading ? (
+              <Loader />
+            ) : (
+              <MovieCard {...foundMovie} />
+            )}
         </div>
       )}
     </div>

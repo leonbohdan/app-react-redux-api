@@ -72,6 +72,10 @@
       outline-color: red;
       // outline-offset: 1px;
     }
+
+    &:hover {
+      background-color: #84a9ac;
+    }
   }
 
   &__help {
