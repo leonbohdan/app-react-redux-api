@@ -2,32 +2,38 @@ import React, { useState, useEffect } from 'react';
 import './FindMovie.scss';
 import PropTypes from 'prop-types';
 import CN from 'classnames';
-import { MovieCard } from '../MovieCard';
-import { Loader } from '../Loader';
-// import { useDispatch } from 'react-redux';
-// import { addMovies } from '../../redux/store';
+// import { MovieCard } from '../MovieCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { actions, selectors } from '../../redux/store';
 
-import { getMovie } from '../../api/api';
+import { getMovies } from '../../api/api';
 
 export const FindMovie = ({ addMovie }) => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const searchTitle = useSelector(selectors.getSearchTitle);
+  const movies = useSelector(selectors.getMovies);
+
   const [loading, setLoading] = useState(false);
-  const [searchTitle, setSearchTitle] = useState('');
   const [foundMovie, setFoundMovie] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [canAddMovie, setCanAddMovie] = useState(false);
 
   // useEffect(() => {
-    // setLoading(false);
-    // searchMovie(searchTitle);
-  // }, [loading]);
+  //   const fetchMovies = async () => {
+  //     const 
+  //     dispatch(actions.setMovies());
+  //   }
+
+  //   fetchMovies();
+
+  // }, [searchTitle]);
 
   const searchMovie = async (title) => {
     setLoading(true);
-    const movie = await getMovie(title);
+    const movies = await getMovies(title);
 
-    if (movie.Response === 'False') {
+    if (movies.Response === 'False') {
       setLoading(false);
       setNotFound(true);
       setShowPreview(false);
@@ -35,13 +41,8 @@ export const FindMovie = ({ addMovie }) => {
       return;
     }
 
-    setFoundMovie({
-      title: movie.Title,
-      description: movie.Plot,
-      imgUrl: movie.Poster,
-      imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
-      imdbId: movie.imdbID,
-    });
+    console.log(movies);
+    dispatch(actions.setMovies([...movies]));
     
     setLoading(false);
     setNotFound(false);
@@ -64,7 +65,7 @@ export const FindMovie = ({ addMovie }) => {
             className="finder__label"
             htmlFor="movie-title"
           >
-            Movie title
+            Movies searching
           </label>
 
           <div className="finder__control">
@@ -78,7 +79,7 @@ export const FindMovie = ({ addMovie }) => {
               })}
               value={searchTitle}
               onChange={(event) => {
-                setSearchTitle(event.target.value);
+                dispatch(actions.setSearchTitle(event.target.value));
                 setNotFound(false);
               }}
             />
@@ -97,11 +98,11 @@ export const FindMovie = ({ addMovie }) => {
               type="submit"
               className="finder__button is-light"
             >
-              Find a movie
+              Find movies
             </button>
           </div>
 
-          <div className="finder__control">
+          {/* <div className="finder__control">
             <button
               type="button"
               className="finder__button is-primary"
@@ -111,16 +112,16 @@ export const FindMovie = ({ addMovie }) => {
                 setLoading(false);
                 setShowPreview(false);
                 setCanAddMovie(false);
-                setSearchTitle('');
+                dispatch(actions.setSearchTitle(''));
               }}
             >
               Add to the list
             </button>
-          </div>
+          </div> */}
         </div>
       </form>
 
-      {showPreview && (
+      {/* {showPreview && (
         <div className="container">
           <h2 className="container__title">Preview</h2>
             {loading ? (
@@ -129,7 +130,7 @@ export const FindMovie = ({ addMovie }) => {
               <MovieCard {...foundMovie} />
             )}
         </div>
-      )}
+      )} */}
     </div>
   );
 };

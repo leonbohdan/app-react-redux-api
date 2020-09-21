@@ -3,16 +3,24 @@ import React from 'react';
 import './MoviesList.scss';
 import PropTypes from 'prop-types';
 import { MovieCard } from '../MovieCard';
+import { Loader } from '../Loader';
 
 export const MoviesList = ({
-  movies = [],
-}) => (
+  movies,
+  loading,
+}) => {
+  if (loading) {
+    return <Loader />;
+  }
+
+  return (
     <div className="movies">
-    {movies.map(movie => (
-      <MovieCard key={movie.imdbId} {...movie} />
-    ))}
-  </div>
-);
+      {movies.map((movie) => (
+        <MovieCard key={movie.imdbId} {...movie} />
+      ))}
+    </div>
+  );
+};
 
 MoviesList.propTypes = {
   movies: PropTypes.arrayOf(

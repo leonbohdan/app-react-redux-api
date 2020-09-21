@@ -1,6 +1,6 @@
 import React from 'react';
-import { useSelector} from 'react-redux';
-import { selectors } from '../../redux/store';
+import { useSelector, useDispatch } from "react-redux";
+import { actions, selectors } from '../../redux/store';
 import './Pagination.scss';
 import CN from 'classnames';
 
@@ -9,12 +9,36 @@ export const Pagination = ({
   totalMovies,
   paginate
 }) => {
+  const dispatch = useDispatch();
   const currentPage = useSelector(selectors.getCurrentPage);
   const pageNumbers = [];
+  const pagesCount = Math.ceil(totalMovies / moviesPerPage);
 
-  for (let i = 1; i <= Math.ceil(totalMovies / moviesPerPage); i++) {
-    pageNumbers.push(i);
+  // for (let i = 1; i <= Math.ceil(totalMovies / moviesPerPage); i++) {
+  //   pageNumbers.push(i);
+  // }
+
+  function createPages(pageNumbers, pagesCount, currentPage) {
+    if (pagesCount > 10) {
+      if (currentPage > 5) {
+        for (let i = currentPage - 4; i <= currentPage + 5; i++) {
+          pageNumbers.push(i);
+          if (i === pagesCount) break;
+        }
+      } else {
+        for (let i = 1; i <= 10; i++) {
+          pageNumbers.push(i);
+          if (i === pagesCount) break;
+        }
+      }
+    } else {
+      for (let i = 1; i <= pagesCount; i++) {
+        pageNumbers.push(i);
+      }
+    }
   }
+
+  createPages(pageNumbers, pagesCount, currentPage);
 
   return (
     <div className="pagination">
@@ -27,7 +51,10 @@ export const Pagination = ({
                 "pagination__current-page":
                   currentPage === page,
               })}
-              onClick={() => paginate(page)}
+              onClick={() => {
+                paginate(page);
+                // dispatch(actions.setCurrentPage(page));
+              }}
             >
               {page}
             </span>

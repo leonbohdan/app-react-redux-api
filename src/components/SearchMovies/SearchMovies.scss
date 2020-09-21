@@ -1,0 +1,90 @@
+.header {
+  background-color: #84a9ac;
+
+  &__menu {
+    padding: 10px 0;
+    margin-bottom: 10px;
+  }
+
+  &__label {
+    font-weight: bold;
+    font-size: 25px;
+    letter-spacing: 2px;
+  }
+
+  &__field {
+    position: relative;
+  }
+
+  &__control {
+    margin: 5px 0 ;
+  }
+
+  &__input {
+    box-sizing: border-box;
+    height: 40px;
+    width: 300px;
+    border-radius: 5px;
+    font-size: 20px;
+    letter-spacing: 2px;
+    border-style: none;
+    border-radius: 10px;
+    padding-left: 25px;
+    outline: none;
+    background-image: url('../../images/search.png');
+    background-position: 2px 8px;
+    background-repeat: no-repeat;
+    transition: width 1s ease-in-out;
+
+    &:hover {
+      background-color: #e4e3e3;
+    }
+
+    &:focus {
+      width: 800px;
+    }
+
+    &--is-danger {
+      outline-color: red;
+      // outline-offset: 1px;
+    }
+  }
+
+  &__button {
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+    height: 40px;
+    width: 200px;
+    margin: 25px 0;
+    border-radius: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-decoration: none;
+    background: #3b6978;
+    transition: background 0.3s ease-in-out;
+
+    &:hover{
+      background: #84a9ac;
+      border: 3px solid black;
+      color: white;
+    }
+
+    &:focus {
+      outline: 1px solid #fff;
+      outline: none;
+      outline-offset: -4px;
+    }
+
+    &:active {
+      transform: scale(0.99);
+    }
+  }
+
+  &__help {
+    position: absolute;
+    top: 65px;
+    color: red;
+  }
+}

@@ -1,12 +1,13 @@
 html {
   background-color: #84a9ac;
   box-sizing: border-box;
+  margin: 0 20px;
 }
 
 .page {
   display: grid;
-  grid-template: auto / 2fr 400px;
-  column-gap: 20px;
+  grid-template: auto / 1fr 400px;
+  column-gap: 30px;
   min-height: 100vh;
 
   &__content {

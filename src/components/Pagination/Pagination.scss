@@ -7,6 +7,9 @@
 
   &__pages {
     margin: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 
   &__page,

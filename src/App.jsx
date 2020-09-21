@@ -3,12 +3,12 @@ import './App.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { actions, selectors } from './redux/store';
 
-import { defaultMovies } from './api/api';
 import { MoviesList } from './components/MoviesList'
 import { FindMovie } from './components/FindMovie';
-import { FilterMovie } from './components/FilterMovie';
-import { Loader } from './components/Loader';
+import { SearchMovies } from './components/SearchMovies';
+// import { Loader } from './components/Loader';
 import { Pagination } from "./components/Pagination";
+import { getMovies } from './api/api';
 
 export const App = () => {
   const dispatch = useDispatch();
@@ -17,33 +17,35 @@ export const App = () => {
   const currentPage = useSelector(selectors.getCurrentPage);
   const moviesPerPage = useSelector(selectors.getMoviesPerPage);
   const totalMovies = useSelector(selectors.getTotalMovies);
+  const [notFound, setNotFound] = useState(false);
 
-  useEffect(() => {
-    const fetchMovies = async() => {
-      dispatch(actions.setMovies(defaultMovies));
+  // useEffect(() => {
+  //   const fetchMovies = async () => {
+  //     dispatch(actions.setMovies(movies));
+  //     // dispatch(actions.setLoading(false));
+  //   }
+
+  //   fetchMovies();
+  // }, []);
+
+  const searchMovies = async (title, page) => {
+    const movies = await getMovies(title, page);
+
+    dispatch(actions.setLoading(true));
+    console.log(movies);
+    if (movies.Response === "False") {
+      setNotFound(true);
+    } else {
+      dispatch(actions.setMovies(movies.Search));
+      dispatch(actions.setTotalMovies(+movies.totalResults));
       dispatch(actions.setLoading(false));
     }
-
-    fetchMovies();
-  }, []);
-
-  const filterMovies = (query) => {
-    const action = actions.filterMovies(query);
-    dispatch(action);
-  };
-
-  const addMovie = (newMovie) => {
-    if (movies.some((movie) =>
-      movie.imdbId === newMovie.imdbId
-    )) {
-      return;
-    }
-
-    dispatch(actions.addMovie(newMovie));
-  };
+    dispatch(actions.setLoading(false));
+  }
 
   const indexOfLastMovie = currentPage * moviesPerPage;
   const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
+  console.log(movies);
   const currentMovies = movies.slice(indexOfFirstMovie, indexOfLastMovie);
 
   const paginate = pageNumber => dispatch(
@@ -52,15 +54,19 @@ export const App = () => {
 
   return (
     <>
-      <FilterMovie filterMovies={filterMovies} />
+      <SearchMovies
+        searchMovies={searchMovies}
+        notFound={notFound}
+        setNotFound={setNotFound}
+      />
 
       <div className="page">
         <div className="page__content">
-          {loading ? (
-            <Loader />
-          ) : (
-            <MoviesList movies={currentMovies} />
-            )}
+          <MoviesList
+            movies={currentMovies}
+            loading={loading}
+          />
+
           <div className="page__pagination">
             <Pagination
               moviesPerPage={moviesPerPage}
@@ -71,7 +77,7 @@ export const App = () => {
         </div>
 
         <div className="page__sidebar">
-          <FindMovie addMovie={addMovie} />
+          {/* <FindMovie addMovie={addMovie} /> */}
         </div>
       </div>
     </>

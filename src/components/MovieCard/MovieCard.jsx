@@ -4,13 +4,14 @@ import CN from 'classnames';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { actions } from "../../redux/store";
+// import { getMovie } from '../../api/api'
 
 export const MovieCard = ({
-  title,
-  description = '',
-  imgUrl,
+  Title,
+  Description = '',
+  Poster,
   imdbUrl,
-  imdbId,
+  imdbID,
 }) => {
   const [details, setDetails] = useState(false);
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ export const MovieCard = ({
       })}>
         <figure className="card__face card__face--front ">
           <img
-            src={imgUrl}
+            src={Poster}
             alt="Film logo"
             className="card__image"
           />
@@ -30,11 +31,11 @@ export const MovieCard = ({
 
         <div className="card__face card__face--back ">
           <div className="media-content">
-            <p className="title">{title}</p>
+            <p className="title">{Title}</p>
           </div>
 
           <div className="content">
-            {description}
+            {Description}
             <br />
             <a href={imdbUrl}>IMDB</a>
           </div>
@@ -55,7 +56,7 @@ export const MovieCard = ({
             type="button"
             className="card__content--button"
             onClick={() => {
-              dispatch(actions.deleteMovie(imdbId))
+              dispatch(actions.deleteMovie(imdbID));
             }}
           >
             Delete film
