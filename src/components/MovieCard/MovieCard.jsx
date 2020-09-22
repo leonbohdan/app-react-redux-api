@@ -3,51 +3,55 @@ import './MovieCard.scss';
 import CN from 'classnames';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { actions } from "../../redux/store";
-// import { getMovie } from '../../api/api'
+import { actions } from '../../redux/store';
 
 export const MovieCard = ({
   Title,
-  Description = '',
+  Description,
   Poster,
   imdbUrl,
   imdbID,
+  handleSelect,
 }) => {
   const [details, setDetails] = useState(false);
   const dispatch = useDispatch();
 
   return (
     <div className="card">
-      <div className={CN('card__container', {
-        'is-flipped': details,
-      })}>
+      <div
+        className={CN("card__container", {
+          "is-flipped": details,
+        })}
+      >
         <figure className="card__face card__face--front ">
-          <img
-            src={Poster}
-            alt="Film logo"
-            className="card__image"
-          />
+          <img src={Poster} alt="Film logo" className="card__image" />
         </figure>
 
         <div className="card__face card__face--back ">
           <div className="media-content">
-            <p className="title">{Title}</p>
+            <>
+              <p className="title">{Title}</p>
+              <p className="title">{`imdbID: ${imdbID}`}</p>
+            </>
           </div>
 
           <div className="content">
             {Description}
             <br />
-            <a href={imdbUrl}>IMDB</a>
+            <a href={`https://www.imdb.com/title/${imdbID}`}>IMDB</a>
           </div>
         </div>
       </div>
-      
+
       <div className="card__content">
         <div className="card__content--buttons">
           <button
             type="button"
             className="card__content--button"
-            onClick={() => {setDetails(!details)}}
+            onClick={() => {
+              setDetails(!details);
+              handleSelect(Title);
+            }}
           >
             Show more
           </button>
@@ -68,8 +72,8 @@ export const MovieCard = ({
 }
 
 MovieCard.propTypes = {
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  imgUrl: PropTypes.string.isRequired,
-  imdbUrl: PropTypes.string.isRequired,
+  Title: PropTypes.string.isRequired,
+  Description: PropTypes.string,
+  imgUrl: PropTypes.string,
+  imdbUrl: PropTypes.string,
 };

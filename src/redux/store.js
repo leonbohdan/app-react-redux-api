@@ -1,32 +1,25 @@
 import { createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-const intialState = {
-  movies: [],
-  searchTitle: '',
-  loading: false,
-  currentPage: 1,
-  moviesPerPage: 10,
-  totalMovies: 0,
-  history: [],
+export const selectors = {
+  getMovies: (state) => state.movies,
+  getSearchTitle: (state) => state.searchTitle,
+  getLoading: (state) => state.loading,
+  getCurrentPage: (state) => state.currentPage,
+  getMoviesPerPage: (state) => state.moviesPerPage,
+  getTotalMovies: (state) => state.totalMovies,
+  getPreview: (state) => state.preview,
+  getHistory: (state) => state.history,
 };
 
-export const selectors = {
-  getMovies: state => state.movies,
-  getSearchTitle: state => state.searchTitle,  getLoading: state => state.loading,
-  getCurrentPage: state => state.currentPage,
-  getMoviesPerPage: state => state.moviesPerPage,
-  getTotalMovies: state => state.totalMovies,
-}
-
 const SET_MOVIES = 'SET_MOVIES';
-const ADD_MOVIE = 'ADD_MOVIE';
 const DELETE_MOVIE = 'DELETE_MOVIE';
-// const FILTER_MOVIES = 'FILTER_MOVIES';
 const SET_CURRENT_PAGE = 'SET_CURRENT_PAGE';
 const SET_LOADING = 'SET_LOADING';
 const SET_SEARCH_TITLE = 'SET_SEARCH_TITLE';
 const SET_TOTAL_MOVIES = 'SET_TOTAL_MOVIES';
+const SET_PREVIEW = 'SET_PREVIEW';
+const SET_HISTORY = 'SET_HISTORY';
 
 export const actions = {
   setMovies: (movies) => ({
@@ -34,20 +27,10 @@ export const actions = {
     movies,
   }),
 
-  // addMovie: (movie) => ({
-  //   type: ADD_MOVIE,
-  //   movie,
-  // }),
-
-  // deleteMovie: (imdbId) => ({
-  //   type: DELETE_MOVIE,
-  //   imdbId,
-  // }),
-
-  // filterMovies: (query) => ({
-  //   type: FILTER_MOVIES,
-  //   query,
-  // }),
+  deleteMovie: (imdbID) => ({
+    type: DELETE_MOVIE,
+    imdbID,
+  }),
 
   setCurrentPage: (pageNumber) => ({
     type: SET_CURRENT_PAGE,
@@ -68,6 +51,16 @@ export const actions = {
     type: SET_TOTAL_MOVIES,
     totalMovies,
   }),
+
+  setPreview: (movieDesc) => ({
+    type: SET_PREVIEW,
+    movieDesc,
+  }),
+
+  setHistory: (query) => ({
+    type: SET_HISTORY,
+    query,
+  }),
 };
 
 const reducer = (state = intialState, action) => {
@@ -76,32 +69,13 @@ const reducer = (state = intialState, action) => {
       return {
         ...state,
         movies: action.movies,
-        // totalMovies: action.movies.totalResults,
-      };
-
-    case ADD_MOVIE:
-      return {
-        ...state,
-        movies: [action.movie, ...state.movies],
-        // totalMovies: (state.totalMovies += 1),
       };
 
     case DELETE_MOVIE:
       return {
         ...state,
         movies: state.movies.filter((movie) => movie.imdbID !== action.imdbID),
-        // totalMovies: (state.totalMovies -= 1),
       };
-
-    // case FILTER_MOVIES:
-    //   return {
-    //     ...state,
-    //     movies: state.movies.filter(
-    //       (movie) =>
-    //         movie.title.toLowerCase().includes(action.query) ||
-    //         movie.description.toLowerCase().includes(action.query),
-    //     ),
-    //   };
 
     case SET_CURRENT_PAGE:
       return {
@@ -127,19 +101,61 @@ const reducer = (state = intialState, action) => {
         totalMovies: action.totalMovies,
       };
 
+    case SET_PREVIEW:
+      return {
+        ...state,
+        preview: action.movieDesc,
+      };
+
+    case SET_HISTORY:
+      return {
+        ...state,
+        history: [...state.history, action.query],
+      };
+
     default:
       return state;
   }
 };
 
+export const loadState = () => {
+  try {
+    const serializedState = sessionStorage.getItem("moviesStore");
+    if (serializedState === null) {
+      return undefined;
+    }
+    return JSON.parse(serializedState);
+  } catch (err) {
+    return undefined;
+  }
+};
+
+export const saveState = (state) => {
+  try {
+    const serializedState = JSON.stringify(state);
+    sessionStorage.setItem("moviesStore", serializedState);
+  } catch {
+    //
+  }
+};
+
+const intialState = sessionStorage.getItem('moviesStore')
+  ? loadState()
+  : {
+    movies: [],
+    searchTitle: '',
+    loading: false,
+    currentPage: 1,
+    moviesPerPage: 10,
+    totalMovies: 0,
+    preview: null,
+    history: [],
+};
+
 const store = createStore(reducer, composeWithDevTools());
 
-function setSessionStorage(intialState) {
-  return store.subscribe(() => {sessionStorage
-  .setItem('moviesStore', JSON.stringify(intialState)
-  )})
-}
-
-setSessionStorage(intialState);
+store.subscribe(() => {
+  saveState(store.getState());
+});
 
 export default store;

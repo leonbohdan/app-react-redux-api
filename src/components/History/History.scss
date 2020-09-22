@@ -1,0 +1,14 @@
+.history {
+  position: absolute;
+  top: 30px;
+  left: 220px;
+  display: flex;
+  flex-direction: row;
+
+  &__query {
+    display: flex;
+    flex-direction: row;
+    margin: 0 5px;
+    
+  }
+}

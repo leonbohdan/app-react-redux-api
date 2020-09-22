@@ -1,22 +1,19 @@
 import React from 'react';
-import { useSelector, useDispatch } from "react-redux";
-import { actions, selectors } from '../../redux/store';
+import { useSelector } from 'react-redux';
+import { selectors } from '../../redux/store';
 import './Pagination.scss';
 import CN from 'classnames';
 
 export const Pagination = ({
   moviesPerPage,
   totalMovies,
-  paginate
+  paginate,
+  searchMovies
 }) => {
-  const dispatch = useDispatch();
   const currentPage = useSelector(selectors.getCurrentPage);
+  const searchTitle = useSelector(selectors.getSearchTitle);
   const pageNumbers = [];
   const pagesCount = Math.ceil(totalMovies / moviesPerPage);
-
-  // for (let i = 1; i <= Math.ceil(totalMovies / moviesPerPage); i++) {
-  //   pageNumbers.push(i);
-  // }
 
   function createPages(pageNumbers, pagesCount, currentPage) {
     if (pagesCount > 10) {
@@ -45,19 +42,18 @@ export const Pagination = ({
       <nav className="pagination__nav">
         <div className="pagination__pages">
           {pageNumbers.map((page) => (
-            <span
+            <div
               key={page}
               className={CN("pagination__page", {
-                "pagination__current-page":
-                  currentPage === page,
+                "pagination__current-page": currentPage === page,
               })}
               onClick={() => {
                 paginate(page);
-                // dispatch(actions.setCurrentPage(page));
+                searchMovies(searchTitle, page);
               }}
             >
               {page}
-            </span>
+            </div>
           ))}
         </div>
       </nav>

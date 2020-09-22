@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import './SearchMovies.scss';
 import PropTypes from 'prop-types';
 import CN from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { actions, selectors } from '../../redux/store';
+import { History } from '../../components/History';
 
 export const SearchMovies = ({
   searchMovies,
@@ -12,6 +13,7 @@ export const SearchMovies = ({
 }) => {
   const dispatch = useDispatch();
   const searchTitle = useSelector(selectors.getSearchTitle);
+  const currentPage = useSelector(selectors.getCurrentPage);
 
   return (
     <div className="header">
@@ -19,11 +21,11 @@ export const SearchMovies = ({
         className="finder__form"
         onSubmit={(event) => {
           event.preventDefault();
-          searchMovies(searchTitle, 1);
-          dispatch(actions.setSearchTitle(""));
-          // dispatch(actions.setCurrentPage(1));
+          dispatch(actions.setHistory(searchTitle));
+          searchMovies(searchTitle, currentPage);
+          dispatch(actions.setCurrentPage(1));
         }}
-        // autoComplete="off"
+        autoComplete="off"
       >
         <div className="header__field">
           <label className="header__label" htmlFor="movie-title">
@@ -54,29 +56,16 @@ export const SearchMovies = ({
           )}
         </div>
 
-        <div className="header__field header__field--is-grouped">
+        <div className="header__field">
           <div className="header__control">
-            <button type="submit" className="header__button is-light">
+            <button
+              type="submit" className="header__button is-light"
+            >
               Find movies
             </button>
-          </div>
 
-          {/* <div className="header__control">
-            <button
-              type="button"
-              className="header__button is-primary"
-              disabled={!canAddMovie}
-              onClick={() => {
-                // addMovie(foundMovie);
-                setLoading(false);
-                setShowPreview(false);
-                setCanAddMovie(false);
-                dispatch(actions.setSearchTitle(''));
-              }}
-            >
-              Add to the list
-            </button>
-          </div> */}
+            <History />
+          </div>
         </div>
       </form>
     </div>
